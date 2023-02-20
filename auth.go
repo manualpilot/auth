@@ -1,4 +1,4 @@
-package impl
+package auth
 
 import (
 	"crypto/ed25519"
