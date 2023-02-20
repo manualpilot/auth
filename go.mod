@@ -1,4 +1,4 @@
-module manualpilot/auth
+module github.com/manualpilot/auth
 
 go 1.20
 
