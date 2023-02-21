@@ -22,19 +22,29 @@ func TestAuth(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	signer := NewRequestSigner(privateKey, "Authorization")
-	verifier := NewRequestVerifier(publicKey, "Authorization")
+	signer := NewRequestSigner[map[string]string](privateKey, "Authorization")
+	verifier := NewRequestVerifier[map[string]string](publicKey, "Authorization")
 
 	req, err := http.NewRequest(http.MethodGet, "https://example.com", nil)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if err := signer(req, id); err != nil {
+	meta := map[string]string{
+		"key": "value",
+	}
+
+	if err := signer(req, id, meta); err != nil {
 		t.Fatal(err)
 	}
 
-	if id != verifier(req) {
-		t.Error("nope")
+	i, m := verifier(req)
+
+	if id != i {
+		t.Fatal("nope")
+	}
+
+	if (*m)["key"] != "value" {
+		t.Fatal("nah")
 	}
 }
