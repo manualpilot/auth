@@ -34,7 +34,7 @@ func TestAuth(t *testing.T) {
 		"key": "value",
 	}
 
-	if err := signer(req, id, meta); err != nil {
+	if err := signer(req, id, &meta); err != nil {
 		t.Fatal(err)
 	}
 
