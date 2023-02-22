@@ -3,20 +3,19 @@ package auth
 import (
 	"crypto/ed25519"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/segmentio/ksuid"
-	"encoding/json"
 )
 
 func NewRequestSigner[T any](
 	privateKey ed25519.PrivateKey,
 	header string,
 ) func(r *http.Request, id string, meta *T) error {
-
 	return func(r *http.Request, id string, meta *T) error {
 		nonce, err := ksuid.NewRandom()
 		if err != nil {
@@ -44,7 +43,6 @@ func NewRequestSigner[T any](
 
 func NewRequestVerifier[T any](publicKey ed25519.PublicKey, header string) func(r *http.Request) (string, *T) {
 	return func(r *http.Request) (string, *T) {
-
 		parts := strings.Split(r.Header.Get(header), ".")
 		if len(parts) != 2 {
 			return "", nil
@@ -64,7 +62,6 @@ func NewRequestVerifier[T any](publicKey ed25519.PublicKey, header string) func(
 			return "", nil
 		}
 
-		// TODO: optional metadata
 		parts = strings.Split(string(msg), "|")
 		if len(parts) < 2 {
 			return "", nil
